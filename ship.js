@@ -1,12 +1,10 @@
-// const SHIP_SIZE = 30
-// const SHIP_ACC = 5
-// const R_SPEED = 420 //nice
-
+import {fps, c, ctx} from './utils'
 class Ship {
-    constructor (shipSize, shipAcc, RSpeed, x, y) {
-        this.shipSize = shipSize;
-        this.shipAcc = shipAcc;
-        this.RSpeed = RSpeed;
+    constructor (x, y) {
+        this.size = 30;
+        this.acc = 5;
+        this.rotation = 0;
+        this.friction = 0.5
         this.alive = true;
         this.cooldown = false;
         this.thrusting = false;
@@ -22,8 +20,6 @@ class Ship {
     };
 
     renderShip() {
-        let c = document.getElementById('gamescreen');
-        let ctx = c.getContext('2d');
         let path = new Path2D()
         this.moveShip();
 
@@ -42,11 +38,37 @@ class Ship {
             this.x - this.r * (Math.cos(this.a) - Math.sin(this.a)),
             this.y + this.r * (Math.sin(this.a) + Math.cos(this.a))
         );
-        
-        ctx.fill(path)
+
+        ctx.fill(path);
     };
 
     moveShip() {
+        //movement based on thrust and angle values
+        if (this.thrusting) {
+            this.thrust.x += this.acc * Math.cos(this.a) / fps;
+            this.thrust.y -= this.acc * Math.sin(this.a) / fps;
+        } else {
+            this.thrust.x -= this.friction * this.thrust.x / fps;
+            this.thrust.y -= this.friction * this.thrust.y / fps;
+        };
 
+        this.a += this.rotation;
+        this.x += this.thrust.x;
+        this.y += this.thrust.y;
+
+        //edge detection
+        if (this.x < 0 - this.r) {
+            this.x = c.width + this.r;
+        } else if (this.x > c.width + this.r) {
+            this.x = 0 = this.r;
+        };
+
+        if (this.y < 0 - this.r) {
+            this.y = c.height + this.r;
+        } else if (this.y > c.height + this.r) {
+            this.y = 0 - this.r;
+        };
     };
+
+    
 };

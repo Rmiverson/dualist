@@ -1,5 +1,5 @@
 const FPS = 60;
-const FR = 0.5;
+const G_R_Speed = 420; //global rotation speed
 
 let canvas = document.getElementById('game-screen');
 let ctx = c.getContext('2d')
